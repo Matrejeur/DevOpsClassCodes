@@ -6,19 +6,19 @@ pipeline{
     agent none
     stages{
         stage('Checkout'){
-            agent any
+            agent {label 'master'}
             steps{
                 git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
             }
         }
         stage('Compile'){
-            agent any
+            agent {label 'master'}
             steps{
                 sh 'mvn compile'
             }
         }
         stage('CodeReview'){
-            agent any
+            agent {label 'master'}
             steps{
                 sh 'mvn pmd:pmd'
             }
@@ -27,11 +27,11 @@ pipeline{
             agent {label 'SlaveQA'}
             steps{
                 git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
-                bat 'mvn test'
+                sh 'mvn test'
             }
         }
         stage('MetricCheck'){
-            agent any
+            agent {label 'master'}
             steps{
                 sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
             }
@@ -39,7 +39,7 @@ pipeline{
         stage('Package'){
             agent{label 'SlaveQA'}
             steps{
-                bat 'mvn package'
+                sh 'mvn package'
             }
         }
     }
